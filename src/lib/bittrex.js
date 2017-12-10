@@ -1,35 +1,41 @@
 const crypto = require('crypto')
 const rp = require('request-promise');
+import Currency from '../models/currency';
+import CurrencyJson from '../models/currencyJson';
 
-const baseUrl = 'https://api.bitfinex.com'
+const baseUrl = 'https://bittrex.com/api'
 
-exports.getBalance = async function(key, secret) {
-  const url = '/v1/balances'
+const getBalance = async function(key, secret) {
   const nonce = Date.now().toString()
+  const url = '/v1.1/account/getbalances?apikey='+key+'&nonce='+nonce
   const completeURL = baseUrl + url
-  const body = {
-    request: url,
-    nonce
-  }
-  const payload = new Buffer(JSON.stringify(body))
-      .toString('base64')
 
   const signature = crypto
-    .createHmac('sha384', secret)
-    .update(payload)
+    .createHmac('sha512', secret)
+    .update(completeURL)
     .digest('hex')
 
   const options = {
-    method: 'POST',
-    url: completeURL,
+    method: 'GET',
     headers: {
-      'X-BFX-APIKEY': key,
-      'X-BFX-PAYLOAD': payload,
-      'X-BFX-SIGNATURE': signature
+      'apisign': signature
     },
-    body: JSON.stringify(body)
+    url: completeURL
   }
 
   const returnBody = await rp.post(options)
-  console.log(returnBody)
+  return JSON.parse(returnBody);
 }
+
+const getUniversalBalance = async (key,secret) => {
+  const bittrexBalance = await getBalance(key,secret);
+  return convertToUniversalBalance(bittrexBalance);
+}
+
+const convertToUniversalBalance = (bittrexBalance) => {
+  return bittrexBalance.result.map(currency=> {
+    return CurrencyJson(currency.Currency, currency.Balance)
+  })
+}
+
+export default getUniversalBalance;
