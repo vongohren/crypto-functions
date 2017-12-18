@@ -11,16 +11,21 @@ const getTotalBalance = async (functions) => {
     const etherBalance = await etherwallet();
 
     let all = bittrexBalance.concat(bitfinexBalance).concat(etherBalance);
-    all = all.filter(currency => {
-      if(currency.ticker  === 'BTC') return true;
-      else if(currency.balance > 0.1) return true;
-    })
-    const balance = _.chain(all).groupBy('ticker').mapValues(v => {
+    let balance = _.chain(all).groupBy('ticker').mapValues(v => {
       return v.map(returnBalance).reduce(sum);
-    })
+    }).value()
 
-    return balance.value()
+    balance = mergeSchizophrenicTickers(balance);
+    return balance
 };
+
+const mergeSchizophrenicTickers = (balance) => {
+  if(balance.QTM && balance.QTUM) {
+    balance.QTUM += balance.QTM
+    delete balance.QTM
+  }
+  return balance
+}
 
 const returnBalance = (object) => {
   return object.balance;
