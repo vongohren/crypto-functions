@@ -20,7 +20,7 @@ const getTotalBalance = async (functions) => {
 };
 
 const mergeSchizophrenicTickers = (balance) => {
-  if(balance.QTM && balance.QTUM) {
+  if(balance.QTM || balance.QTUM) {
     balance.QTUM += balance.QTM
     delete balance.QTM
   }
