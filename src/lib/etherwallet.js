@@ -12,11 +12,13 @@ const getAddressData = async function() {
 
   const options = {
     method: 'GET',
-    url: completeURL
+    url: completeURL,
+    resolveWithFullResponse: true,
+    timeout: 6000
   }
 
-  const returnBody = await rp.post(options)
-  return JSON.parse(returnBody);
+  const response = await rp.post(options)
+  return JSON.parse(response.body);
 }
 
 const getTotalBalanceWalletBalance = async () => {

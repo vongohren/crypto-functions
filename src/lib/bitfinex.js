@@ -29,11 +29,12 @@ const getBalance = async (key, secret) => {
       'X-BFX-PAYLOAD': payload,
       'X-BFX-SIGNATURE': signature
     },
-    body: JSON.stringify(body)
+    body: JSON.stringify(body),
+    resolveWithFullResponse: true,
+    timeout: 6000
   }
-
-  const returnBody = await rp.post(options)
-  return JSON.parse(returnBody);
+  const response = await rp.post(options)
+  return JSON.parse(response.body);
 }
 
 const getUniversalBalance = async (key,secret) => {

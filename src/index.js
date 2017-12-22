@@ -1,21 +1,20 @@
 import * as functions from 'firebase-functions';
-import logger from './utils/logger';
 import express from 'express';
-import bitfinex from './lib/bitfinex';
-import bittrex from './lib/bittrex';
-import etherwallet from './lib/etherwallet';
 import getBalance from './services/balance';
 import security from './middleware/security';
-
-process.on('unhandledRejection', r => logger.log('error',r))
+import asyncMiddleware from './middleware/asyncMiddleware';
+import StatusCodeErrorHandler from './middleware/StatusCodeErrorHandler';
+import RequestErrorHandler from './middleware/RequestErrorHandler';
 
 let app = express();
 
-app.use(security)
-app.get('/getBalances', async (req, res) => {
+app.get('/getBalances', asyncMiddleware(async (req, res) => {
   const balance = await getBalance(functions)
   res.send(balance)
-});
+}));
 
-// Expose Express API as a single Cloud Function:
+app.use(StatusCodeErrorHandler)
+app.use(RequestErrorHandler)
+app.use(security)
+
 exports.balances = functions.https.onRequest(app);

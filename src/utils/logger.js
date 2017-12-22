@@ -17,37 +17,37 @@ const exceptionHandlers = [winstonConsole]
 const transports = [winstonConsole]
 
 if(!DEV) {
-    const winstonPapertrail = new winston.transports.Papertrail({
-        host: papertrailConfig.host,
-        port: papertrailConfig.port,
-        colorize: true,
-        program: papertrailConfig.name
-    })
+  const winstonPapertrail = new winston.transports.Papertrail({
+    host: papertrailConfig.host,
+    port: papertrailConfig.port,
+    colorize: true,
+    program: papertrailConfig.name
+  })
 
-    winstonPapertrail.on('error', function(err) {
-        console.log(err);
-    });
+  winstonPapertrail.on('error', function(err) {
+    console.log(err);
+  });
 
-    exceptionHandlers.push(winstonPapertrail);
-    transports.push(winstonPapertrail);
+  exceptionHandlers.push(winstonPapertrail);
+  transports.push(winstonPapertrail);
 }
 
 winston.handleExceptions(exceptionHandlers);
 
 class Logger {
-    constructor() {
-        this.mainLogger = new winston.Logger({
-          transports: transports
-        });
-    }
+  constructor() {
+      this.mainLogger = new winston.Logger({
+        transports: transports
+      });
+  }
 
-    log(level, message) {
-        this.mainLogger[level](message);
-    }
+  log(level, message) {
+      this.mainLogger[level](message);
+  }
 
-    close() {
-        this.mainLogger.close()
-    }
+  close() {
+      this.mainLogger.close()
+  }
 }
 
 const LoggerClass = new Logger();
