@@ -1,8 +1,10 @@
 const winston = require('winston')
+import * as functions from 'firebase-functions';
 require('winston-papertrail').Papertrail;
 
 const DEV = process.env.NODE_ENV !== 'production';
 console.log(DEV)
+const papertrailConfig = functions.config().papertrail;
 
 const winstonConsole = new winston.transports.Console({
     prettyPrint: true,
@@ -16,10 +18,10 @@ const transports = [winstonConsole]
 
 if(!DEV) {
     const winstonPapertrail = new winston.transports.Papertrail({
-        host: process.env.LOGHOST,
-        port: process.env.LOGPORT,
+        host: papertrailConfig.host,
+        port: papertrailConfig.port,
         colorize: true,
-        program: process.env.LOGNAME
+        program: papertrailConfig.name
     })
 
     winstonPapertrail.on('error', function(err) {
