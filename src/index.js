@@ -8,6 +8,8 @@ import RequestErrorHandler from './middleware/RequestErrorHandler';
 
 let app = express();
 
+app.use(security)
+
 app.get('/getBalances', asyncMiddleware(async (req, res) => {
   const balance = await getBalance(functions)
   res.send(balance)
@@ -15,6 +17,6 @@ app.get('/getBalances', asyncMiddleware(async (req, res) => {
 
 app.use(StatusCodeErrorHandler)
 app.use(RequestErrorHandler)
-app.use(security)
+
 
 exports.balances = functions.https.onRequest(app);
