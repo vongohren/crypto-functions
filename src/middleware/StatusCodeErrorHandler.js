@@ -12,7 +12,6 @@ const StatusCodeErrorHandler = (error, req, res, next) => {
 };
 
 const parseMessage = (error) => {
-  console.log()
   let message = ""
   logger.log('error', {
     message: error.message,
