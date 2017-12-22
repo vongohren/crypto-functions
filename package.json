@@ -2,8 +2,8 @@
   "name": "functions",
   "description": "Cloud Functions for Firebase",
   "scripts": {
-    "dev": "npm run prepare-npm && babel src -w -d build & npm run shell",
-    "prepare-npm": "cp package.json build && npm install --production",
+    "dev": "npm run prepare-env && npm run prepare-npm && babel src -w -d build & npm run shell",
+    "prepare-npm": "cp package.json build && npm --prefix ./build install --production",
     "prepare-env": "firebase functions:config:get > .runtimeconfig.json && mv .runtimeconfig.json build",
     "build": "npm run prepare-npm && babel src -d build",
     "watch": "babel-watch src/index.js",
@@ -11,6 +11,7 @@
     "shell": "firebase experimental:functions:shell",
     "start": "npm run shell",
     "deploy": "firebase deploy --only functions",
+    "deploy-dev": "firebase -P sheet-crypto-dev deploy --only functions",
     "logs": "firebase functions:log"
   },
   "dependencies": {
