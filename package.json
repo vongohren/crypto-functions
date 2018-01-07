@@ -3,6 +3,7 @@
   "description": "Cloud Functions for Firebase",
   "scripts": {
     "dev": "npm run prepare-env && npm run prepare-npm && babel src -w -d build & npm run shell",
+    "dev-serve": "npm run prepare-env && npm run prepare-npm && babel src -w -d build & npm run serve",
     "prepare-npm": "cp package.json build && npm --prefix ./build install --production",
     "prepare-env": "firebase functions:config:get > .runtimeconfig.json && mv .runtimeconfig.json build",
     "build": "npm run prepare-npm && babel src -d build",
@@ -15,6 +16,7 @@
     "logs": "firebase functions:log"
   },
   "dependencies": {
+    "cors": "^2.8.4",
     "express": "^4.16.2",
     "firebase-admin": "~5.5.0",
     "firebase-functions": "^0.7.1",
